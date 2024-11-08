@@ -1,61 +1,51 @@
-using System;
 using UnityEngine;
 
 namespace ShootEmUp
 {
     public sealed class LevelBackground : MonoBehaviour
-    {
-        private float startPositionY;
-        private float endPositionY;
-        private float movingSpeedY;
-        private float positionX;
-        private float positionZ;
+    {   
+        [SerializeField] private float _movingSpeedY;
+        [Space]
+        [SerializeField] private SpriteRenderer _spriteRenderer;
+        
+        private Vector3 _startPosition;
+        private float _movementDistance;
 
-        private Transform myTransform;
-
-        [SerializeField]
-        private Params m_params;
-
-        private void Awake()
+        private float _currentDistanceTraveled;
+        
+        private void Start()
         {
-            this.startPositionY = this.m_params.m_startPositionY;
-            this.endPositionY = this.m_params.m_endPositionY;
-            this.movingSpeedY = this.m_params.m_movingSpeedY;
-            this.myTransform = this.transform;
-            var position = this.myTransform.position;
-            this.positionX = position.x;
-            this.positionZ = position.z;
+            _startPosition = transform.position;
+            _movementDistance = _spriteRenderer.bounds.size.y;
         }
-
-        private void FixedUpdate()
+        
+        private void Update()
         {
-            if (this.myTransform.position.y <= this.endPositionY)
+            if (CheckIfTraveledFullDistance())
             {
-                this.myTransform.position = new Vector3(
-                    this.positionX,
-                    this.startPositionY,
-                    this.positionZ
-                );
+                MoveToStartPosition();
             }
-
-            this.myTransform.position -= new Vector3(
-                this.positionX,
-                this.movingSpeedY * Time.fixedDeltaTime,
-                this.positionZ
-            );
+            
+            MoveDown();
+        }
+        
+        private bool CheckIfTraveledFullDistance()
+        {
+            return _currentDistanceTraveled >= _movementDistance;
+        }
+        
+        private void MoveToStartPosition()
+        {
+            _currentDistanceTraveled = 0;
+            transform.position = _startPosition;
         }
 
-        [Serializable]
-        public sealed class Params
+        private void MoveDown()
         {
-            [SerializeField]
-            public float m_startPositionY;
-
-            [SerializeField]
-            public float m_endPositionY;
-
-            [SerializeField]
-            public float m_movingSpeedY;
+            var offsetY = _movingSpeedY * Time.deltaTime;
+            transform.position -= new Vector3(transform.position.x, offsetY, transform.position.z);
+            
+            _currentDistanceTraveled += offsetY;
         }
     }
 }
