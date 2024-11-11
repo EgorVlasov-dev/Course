@@ -50,8 +50,8 @@ namespace ShootEmUp
             if (this.isPointReached)
             {
                 //Attack:
-                if (this.target.health <= 0)
-                    return;
+               // if (this.target.health <= 0)
+               //     return;
 
                 this.currentTime -= Time.fixedDeltaTime;
                 if (this.currentTime <= 0)

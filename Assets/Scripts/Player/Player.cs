@@ -1,26 +1,23 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ShootEmUp
 {
     public sealed class Player : MonoBehaviour
     {
-        public Action<Player, int> OnHealthChanged;
-        public Action<Player> OnHealthEmpty;
-
-        [SerializeField]
-        public bool isPlayer;
+        [SerializeField] private List<MonoBehaviour> _components;
+   
+        public T GetComponentImplementing<T>() where T : class
+        {
+            foreach (var component in _components)
+            {
+                if (component is T)
+                {
+                    return component as T;
+                }
+            }
+            return null;
+        }
         
-        [SerializeField]
-        public Transform firePoint;
-        
-        [SerializeField]
-        public int health;
-
-        [SerializeField]
-        public Rigidbody2D _rigidbody;
-
-        [SerializeField]
-        public float speed = 5.0f;
     }
 }
