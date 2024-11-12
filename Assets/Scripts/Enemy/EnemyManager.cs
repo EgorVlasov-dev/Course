@@ -15,7 +15,7 @@ namespace ShootEmUp
         private Transform[] attackPositions;
         
         [SerializeField]
-        private Player character;
+        private Entity character;
 
         [SerializeField]
         private Transform worldTransform;
@@ -85,14 +85,14 @@ namespace ShootEmUp
 
         private void OnFire(Vector2 position, Vector2 direction)
         {
-            _bulletSystem.SpawnBullet(
-                position,
-                Color.red,
-                (int) PhysicsLayer.ENEMY_BULLET,
-                1,
-                false,
-                direction * 2
-            );
+          //  _bulletSystem.SpawnBullet(
+          //      position,
+          //      Color.red,
+          //      (int) PhysicsLayer.ENEMY_BULLET,
+          //      1,
+          //      false,
+          //      direction * 2
+          //  );
         }
 
         private Transform RandomPoint(Transform[] points)

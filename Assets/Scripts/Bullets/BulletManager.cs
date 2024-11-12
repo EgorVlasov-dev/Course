@@ -3,125 +3,91 @@ using UnityEngine;
 
 namespace ShootEmUp
 {
-    public sealed class BulletManager : MonoBehaviour
+    public class BulletManager : MonoBehaviour
     {
         [SerializeField]
-        public Bullet prefab;
+        private Bullet _prefab;
 
         [SerializeField]
-        public Transform worldTransform;
-
-        [SerializeField]
-        private LevelBounds levelBounds;
+        private LevelBounds _levelBounds;
         
         [SerializeField]
-        private Transform container;
-
-        public readonly HashSet<Bullet> m_activeBullets = new();
-        public readonly Queue<Bullet> m_bulletPool = new();
-        private readonly List<Bullet> m_cache = new();
-
-        private void Awake()
+        private Transform _spawnTransform;
+        
+        [SerializeField]
+        private int _initialSizePool;
+        
+        private readonly Queue<Bullet> _bulletPool = new();
+        private readonly List<Bullet> _activeBullets = new();
+        
+        private void Start()
         {
-            for (var i = 0; i < 10; i++)
-            {
-                Bullet bullet = Instantiate(this.prefab, this.container);
-                this.m_bulletPool.Enqueue(bullet);
-            }
+            InitCreateBullets();
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
-            this.m_cache.Clear();
-            this.m_cache.AddRange(this.m_activeBullets);
+            CheckingBulletsOutside();
+        }
 
-            for (int i = 0, count = this.m_cache.Count; i < count; i++)
+        private void InitCreateBullets()
+        {
+            for (int i = 0; i < _initialSizePool; i++)
             {
-                Bullet bullet = this.m_cache[i];
-                if (!this.levelBounds.InBounds(bullet.transform.position))
+                Bullet bullet = Instantiate(_prefab, transform);
+                bullet.gameObject.SetActive(false);
+                _bulletPool.Enqueue(bullet);
+            }
+        }
+        
+        public Bullet SpawnBullet()
+        {
+            Bullet bullet = GetBullet();
+            bullet.gameObject.SetActive(true);
+            bullet.SetPosition(_spawnTransform.position);
+            bullet.BulletOff += OnBulletCollision;
+            _activeBullets.Add(bullet);
+
+            return bullet;
+        }
+        
+        private Bullet GetBullet()
+        {   
+           if (_bulletPool.TryDequeue(out var bullet))
+           {
+               bullet.transform.SetParent(transform);
+               return bullet;
+           }
+           else
+           {
+               bullet = Instantiate(_prefab, transform);
+               bullet.BulletOff += OnBulletCollision;
+               return bullet;
+           }
+        }
+        
+        private void CheckingBulletsOutside()
+        {
+            for (int i = 0; i < _activeBullets.Count; i++)
+            {
+                if (_levelBounds.InBounds(_activeBullets[i].transform.position) == false)
                 {
-                    this.RemoveBullet(bullet);
+                    RemoveBullet(_activeBullets[i]);
                 }
             }
         }
-
-        public void SpawnBullet(
-            Vector2 position,
-            Color color,
-            int physicsLayer,
-            int damage,
-            bool isPlayer,
-            Vector2 velocity
-        )
+        
+        private void OnBulletCollision(Bullet bullet)
         {
-            if (this.m_bulletPool.TryDequeue(out var bullet))
-            {
-                bullet.transform.SetParent(this.worldTransform);
-            }
-            else
-            {
-                bullet = Instantiate(this.prefab, this.worldTransform);
-            }
-
-            bullet.transform.position = position;
-            bullet.spriteRenderer.color = color;
-            bullet.gameObject.layer = physicsLayer;
-            bullet.damage = damage;
-            bullet.isPlayer = isPlayer;
-            bullet.rigidbody2D.velocity = velocity;
-
-            if (m_activeBullets.Add(bullet))
-            {
-                bullet.OnCollisionEntered += OnBulletCollision;
-            }
+            RemoveBullet(bullet);
         }
-
-        private void OnBulletCollision(Bullet bullet, Collision2D collision)
-        {
-            this.DealDamage(bullet, collision.gameObject);
-            this.RemoveBullet(bullet);
-        }
-
+        
         private void RemoveBullet(Bullet bullet)
         {
-            if (this.m_activeBullets.Remove(bullet))
-            {
-                bullet.OnCollisionEntered -= this.OnBulletCollision;
-                bullet.transform.SetParent(this.container);
-                this.m_bulletPool.Enqueue(bullet);
-            }
-        }
-
-        private void DealDamage(Bullet bullet, GameObject other)
-        {
-            int damage = bullet.damage;
-            if (damage <= 0)
-                return;
-            
-            if (other.TryGetComponent(out Player player))
-            {
-                //if (bullet.isPlayer != player.isPlayer)
-                //{
-                //    if (player.health <= 0)
-                //        return;
-//
-                //    player.health = Mathf.Max(0, player.health - damage);
-                //    player.OnHealthChanged?.Invoke(player, player.health);
-//
-                //    if (player.health <= 0)
-                //        player.OnHealthEmpty?.Invoke(player);
-                //}
-            }
-            else if (other.TryGetComponent(out Enemy enemy))
-            {
-                if (bullet.isPlayer != enemy.isPlayer)
-                {
-                    if (enemy.health > 0)
-                    {
-                        enemy.health = Mathf.Max(0, enemy.health - damage);
-                    }
-                }
-            }
+          bullet.BulletOff -= OnBulletCollision;
+          _bulletPool.Enqueue(bullet);
+          _activeBullets.Remove(bullet);
+          bullet.gameObject.SetActive(false);
         }
     }
 }

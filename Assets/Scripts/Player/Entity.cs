@@ -3,9 +3,10 @@ using UnityEngine;
 
 namespace ShootEmUp
 {
-    public sealed class Player : MonoBehaviour
+    public sealed class Entity : MonoBehaviour
     {
-        [SerializeField] private List<MonoBehaviour> _components;
+        [SerializeField] 
+        private List<MonoBehaviour> _components;
    
         public T GetComponentImplementing<T>() where T : class
         {

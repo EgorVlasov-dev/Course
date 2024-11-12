@@ -1,10 +1,11 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace ShootEmUp
 {
     public sealed class PlayerController : MonoBehaviour
     {
-        [SerializeField] private Player _player;
+        [FormerlySerializedAs("_player")] [SerializeField] private Entity entity;
         [SerializeField] private BulletManager _bulletManager;
         
         [SerializeField] private PlayerInputSystem _inputSystem;
@@ -23,12 +24,12 @@ namespace ShootEmUp
 
         private void OnPlayerMoved(Vector2 direction)
         {
-            _player.GetComponentImplementing<IControllable>().SetDirection(direction);
+            entity.GetComponentImplementing<IControllable>().SetDirection(direction);
         }
         
         private void OnPlayerFired()
         {
-            _player.GetComponentImplementing<IAttacker>().Attack();
+            entity.GetComponentImplementing<IAttacker>().Attack();
         }
     }
 }

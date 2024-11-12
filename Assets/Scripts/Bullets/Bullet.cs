@@ -5,23 +5,46 @@ namespace ShootEmUp
 {
     public sealed class Bullet : MonoBehaviour
     {
-        public event Action<Bullet, Collision2D> OnCollisionEntered;
-
-        [NonSerialized]
-        public bool isPlayer;
+        public event Action<Bullet> BulletOff;
         
-        [NonSerialized]
-        public int damage;
+        [SerializeField]
+        private int _damage;
 
         [SerializeField]
-        public new Rigidbody2D rigidbody2D;
+        private Rigidbody2D _rigidbody2D;
 
         [SerializeField]
-        public SpriteRenderer spriteRenderer;
+        private SpriteRenderer _spriteRenderer;
 
+        [SerializeField] 
+        private float MagnitudeVelocity = 3;
+        
+        public void SetPosition(Vector3 position)
+        {
+            gameObject.transform.position = position;
+        }
+
+        public void SetVelocity(Vector2 velocity)
+        {
+            _rigidbody2D.velocity = velocity.normalized * MagnitudeVelocity;
+        }
+        
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            this.OnCollisionEntered?.Invoke(this, collision);
+            if (collision.gameObject.TryGetComponent<Entity>(out var player))
+            {
+                var damageable = player.GetComponentImplementing<IDamagable>();
+                if (damageable != null)
+                {
+                    damageable.TakeDamage(_damage);
+                    BulletOff?.Invoke(this);
+                }
+            }
+        }
+
+        private void OnBecameInvisible()
+        {
+            BulletOff?.Invoke(this);
         }
     }
 }

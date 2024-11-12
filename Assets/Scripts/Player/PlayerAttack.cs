@@ -5,20 +5,15 @@ namespace ShootEmUp
     public class PlayerAttack : MonoBehaviour, IAttacker
     {
         [SerializeField]
-        public Transform firePoint;
+        public Transform _firePoint;
+        
+        [SerializeField] 
+        private BulletManager _bulletManager;
         
         public void Attack()
         {
-            // _bulletManager.SpawnBullet(
-            //     this._player.firePoint.position,
-            //     Color.blue,
-            //     (int) PhysicsLayer.PLAYER_BULLET,
-            //     1,
-            //     true,
-            //     this._player.firePoint.rotation * Vector3.up * 3
-            // );
-
-            Debug.Log("Blup");
+            Bullet bullet = _bulletManager.SpawnBullet();
+            bullet.SetVelocity(_firePoint.rotation * Vector3.up);
         }
     }
 }

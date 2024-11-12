@@ -28,7 +28,7 @@ namespace ShootEmUp
         private float countdown;
 
         [NonSerialized]
-        public Player target;
+        public Entity target;
 
         private Vector2 destination;
         private float currentTime;
