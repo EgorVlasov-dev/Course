@@ -1,10 +1,12 @@
 using System;
-using ShootEmUp;
 
-public interface IDamagable
+namespace ShootEmUp
 {
-    public event Action<int> OnHealthChanged;
-    public event Action<Entity> OnHealthEmpty;
+    public interface IDamagable
+    {
+        public event Action<int> OnHealthChanged;
+        public event Action<Entity> OnHealthEmpty;
 
-    public void TakeDamage(int damage);
+        public void TakeDamage(int damage);
+    }
 }

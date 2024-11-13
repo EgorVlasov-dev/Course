@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -31,22 +30,11 @@ namespace ShootEmUp
         [SerializeField]
         private BulletManager _bulletSystem;
         
-        private readonly HashSet<Entity> _activeEnemies = new();
-        private readonly Queue<Entity> _enemyPool = new();
+        private PoolObject<Entity> _enemyPool;
         
         private void Awake()
-        {
-            InitEnemy();
-        }
-
-        private void InitEnemy()
-        {
-            for (var i = 0; i < enemyPoolInitSize; i++)
-            {
-                 Entity enemy = Instantiate(_prefab, _container);
-                 enemy.gameObject.SetActive(false);
-                 _enemyPool.Enqueue(enemy);
-            }
+        {   
+            _enemyPool = new PoolObject<Entity>(_prefab, _container, enemyPoolInitSize);
         }
 
         private void Start()
@@ -65,23 +53,14 @@ namespace ShootEmUp
 
         private void SpawnEnemy()
         {
-            Entity enemy = GetEnemyFromPool();
+            Entity enemy = _enemyPool.GetObject();
             enemy.gameObject.SetActive(true);
             SetupEnemy(enemy);
 
-            if (_activeEnemies.Count < 5 && _activeEnemies.Add(enemy))
+            if (_enemyPool.GetActiveObjects().Count < 5)
             {
                 enemy.GetComponentImplementing<EnemyAttack>().OnFire += OnFire;
             }
-        }
-
-        private Entity GetEnemyFromPool()
-        {
-            if (!_enemyPool.TryDequeue(out Entity enemy))
-            {
-                enemy = Instantiate(_prefab, _container);
-            }
-            return enemy;
         }
 
         private void SetupEnemy(Entity enemy)
@@ -109,11 +88,7 @@ namespace ShootEmUp
 
         private void EnemyDead(Entity enemy)
         {
-            _activeEnemies.Remove(enemy);
-            _enemyPool.Enqueue(enemy);
-            
-            enemy.transform.SetParent(_container);
-            enemy.gameObject.SetActive(false);
+           _enemyPool.ReturnObject(enemy);
             
             enemy.GetComponentImplementing<IDamagable>().OnHealthEmpty -= EnemyDead;
             enemy.GetComponentImplementing<EnemyAttack>().OnFire -= OnFire;

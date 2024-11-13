@@ -1,4 +1,9 @@
-public interface IAttacker
-{ 
-    void Attack();
+
+namespace ShootEmUp
+{
+
+    public interface IAttacker
+    {
+        void Attack();
+    }
 }
