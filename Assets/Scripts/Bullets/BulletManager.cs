@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace ShootEmUp
 {
-    public abstract class BulletManager : MonoBehaviour
+    public class BulletManager : MonoBehaviour
     {
         [SerializeField]
         private Bullet _prefab;

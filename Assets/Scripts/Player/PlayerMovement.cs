@@ -4,8 +4,14 @@ namespace ShootEmUp
 {
     public class PlayerMovement : MonoBehaviour, IMovable
     {
-        [SerializeField] public float _speed = 5.0f;
-        [Space] [SerializeField] public Rigidbody2D _rigidbody;
+        [SerializeField] 
+        private float _speed = 5.0f;
+        [SerializeField] 
+        private Rigidbody2D _rigidbody;
+
+        [Space] 
+        [SerializeField] 
+        private LevelBounds _levelBounds;
 
         private Vector2 _currentDirection;
 
@@ -23,7 +29,15 @@ namespace ShootEmUp
         {
             Vector2 moveStep = _currentDirection * Time.fixedDeltaTime * _speed;
             Vector2 targetPosition = _rigidbody.position + moveStep;
-            _rigidbody.MovePosition(targetPosition);
+            
+            if (_levelBounds.InBounds(targetPosition))
+            {
+                _rigidbody.MovePosition(targetPosition);
+            }
+            else
+            {
+                _rigidbody.MovePosition(_rigidbody.position);
+            }
         }
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace ShootEmUp
 {
@@ -8,39 +7,27 @@ namespace ShootEmUp
     {
         public event Action OnFired;
         public event Action<Vector2> Moved;
-
-        private InputConfigs _inputConfigs;
-
-        private void Awake()
-        {
-            _inputConfigs = new();
-            _inputConfigs.Enable();
-        }
-
-        private void OnEnable()
-        {
-            _inputConfigs.Gameplay.Fire.performed += OnFirePerformed;
-        }
-
-        private void OnDisable()
-        {
-            _inputConfigs.Gameplay.Fire.performed -= OnFirePerformed;
-        }
-
-        private void OnFirePerformed(InputAction.CallbackContext obj)
-        {
-            OnFired?.Invoke();
-        }
-
+        
         private void Update()
         {
-            ReadMovement();
+            Movement();
+            Fire();
         }
 
-        private void ReadMovement()
-        {
-            var direction = _inputConfigs.Gameplay.Movement.ReadValue<Vector2>();
+        private void Movement()
+        {   
+            float moveX = Input.GetAxis("Horizontal");
+            Vector2 direction = new Vector2(moveX, 0);
+            
             Moved?.Invoke(direction);
+        }
+        
+        private void Fire()
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                OnFired?.Invoke();
+            }
         }
     }
 }

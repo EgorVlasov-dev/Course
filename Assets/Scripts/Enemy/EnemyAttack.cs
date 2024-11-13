@@ -7,10 +7,13 @@ namespace ShootEmUp
     {
         public event Action<Vector2, Vector2> OnFire;
 
-        [SerializeField] public Transform _firePoint;
-        [Space] [SerializeField] private float _countdown;
+        [SerializeField] 
+        private Transform _firePoint;
+        
+        [Space] 
+        [SerializeField] private float _countdown;
 
-        public Transform _target;
+        private Transform _target;
         private float _currentTime;
 
         private void Update()

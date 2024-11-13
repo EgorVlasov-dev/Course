@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -14,15 +15,12 @@ namespace ShootEmUp
         
         [SerializeField]
         private Entity _character;
-
-        [SerializeField]
-        private Transform worldTransform;
-
+        
         [SerializeField]
         private Transform _container;
         
         [SerializeField]
-        private int enemyPoolInitSize;
+        private int _enemyPoolInitSize;
         
         [SerializeField]
         private Entity _prefab;
@@ -32,9 +30,12 @@ namespace ShootEmUp
         
         private PoolObject<Entity> _enemyPool;
         
+        private Queue<Entity> _waitingToShoot = new Queue<Entity>();
+        private HashSet<Entity> _activeShootingEnemies = new HashSet<Entity>();
+        
         private void Awake()
         {   
-            _enemyPool = new PoolObject<Entity>(_prefab, _container, enemyPoolInitSize);
+            _enemyPool = new PoolObject<Entity>(_prefab, _container, _enemyPoolInitSize);
         }
 
         private void Start()
@@ -58,8 +59,13 @@ namespace ShootEmUp
             SetupEnemy(enemy);
 
             if (_enemyPool.GetActiveObjects().Count < 5)
-            {
+            {   
+                StartShooting(enemy);
                 enemy.GetComponentImplementing<EnemyAttack>().OnFire += OnFire;
+            }
+            else
+            {
+                _waitingToShoot.Enqueue(enemy);
             }
         }
 
@@ -80,6 +86,12 @@ namespace ShootEmUp
             return points[index];
         }
         
+        private void StartShooting(Entity enemy)
+        {
+            _activeShootingEnemies.Add(enemy);
+            enemy.GetComponentImplementing<EnemyAttack>().OnFire += OnFire;
+        }
+        
         private void OnFire(Vector2 position, Vector2 direction)
         {
             Bullet bullet = _bulletSystem.SpawnBullet(position);
@@ -92,6 +104,14 @@ namespace ShootEmUp
             
             enemy.GetComponentImplementing<IDamagable>().OnHealthEmpty -= EnemyDead;
             enemy.GetComponentImplementing<EnemyAttack>().OnFire -= OnFire;
+            
+            _activeShootingEnemies.Remove(enemy);
+            
+            if (_waitingToShoot.Count > 0)
+            {
+                Entity nextEnemy = _waitingToShoot.Dequeue();
+                StartShooting(nextEnemy);
+            }
         }
     }
 }

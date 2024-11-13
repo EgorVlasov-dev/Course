@@ -6,9 +6,7 @@ namespace ShootEmUp
     {
         [SerializeField] 
         private Entity _entity;
-        [SerializeField] 
-        private BulletManager _bulletManager;
-        
+        [Space]
         [SerializeField] 
         private PlayerInputSystem _inputSystem;
 
