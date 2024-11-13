@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ShootEmUp
 {
-    public class BulletManager : MonoBehaviour
+    public abstract class BulletManager : MonoBehaviour
     {
         [SerializeField]
         private Bullet _prefab;
@@ -12,13 +12,10 @@ namespace ShootEmUp
         private LevelBounds _levelBounds;
         
         [SerializeField]
-        private Transform _spawnTransform;
-        
-        [SerializeField]
         private int _initialSizePool;
         
         private readonly Queue<Bullet> _bulletPool = new();
-        private readonly List<Bullet> _activeBullets = new();
+        protected readonly List<Bullet> _activeBullets = new();
         
         private void Start()
         {
@@ -40,18 +37,18 @@ namespace ShootEmUp
             }
         }
         
-        public Bullet SpawnBullet()
+        public Bullet SpawnBullet(Vector2 position)
         {
             Bullet bullet = GetBullet();
             bullet.gameObject.SetActive(true);
-            bullet.SetPosition(_spawnTransform.position);
+            bullet.SetPosition(position);
             bullet.BulletOff += OnBulletCollision;
             _activeBullets.Add(bullet);
 
             return bullet;
         }
         
-        private Bullet GetBullet()
+        protected Bullet GetBullet()
         {   
            if (_bulletPool.TryDequeue(out var bullet))
            {
@@ -77,7 +74,7 @@ namespace ShootEmUp
             }
         }
         
-        private void OnBulletCollision(Bullet bullet)
+        protected void OnBulletCollision(Bullet bullet)
         {
             RemoveBullet(bullet);
         }

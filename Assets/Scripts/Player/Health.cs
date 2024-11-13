@@ -4,10 +4,11 @@ using UnityEngine;
 namespace ShootEmUp
 {
     public class Health : MonoBehaviour, IDamagable
-    {
+    {   
         public event Action<int> OnHealthChanged;
-        public event Action OnHealthEmpty;
+        public event Action<Entity> OnHealthEmpty;
 
+        [SerializeField] private Entity _entity;
         [SerializeField] private int _maxHealth;
 
         private int _currentHealth;
@@ -35,8 +36,7 @@ namespace ShootEmUp
 
         private void Die()
         {
-            OnHealthEmpty?.Invoke();
-            Time.timeScale = 0;
+            OnHealthEmpty?.Invoke(_entity);
         }
     }
 }

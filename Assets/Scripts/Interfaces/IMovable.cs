@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public interface IControllable
+public interface IMovable
 {
     public void SetDirection(Vector2 direction);
     
