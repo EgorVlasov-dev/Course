@@ -6,38 +6,31 @@ namespace ShootEmUp
     {
         [SerializeField] 
         private Entity _entity;
+
         [Space]
         [SerializeField] 
-        private PlayerInputSystem _inputSystem;
+        private PlayerInput input;
 
         private void OnEnable()
         {
-            _inputSystem.Moved += OnPlayerMoved;
-            _inputSystem.OnFired += OnPlayerFired;
-            _entity.GetComponentImplementing<IDamagable>().OnHealthEmpty += PlayerDead;
+            input.Moved += OnPlayerMoved;
+            input.OnFired += OnPlayerFired;
         }
         
         private void OnDisable()
         {
-            _inputSystem.Moved += OnPlayerMoved;
-            _inputSystem.OnFired += OnPlayerFired;
-            _entity.GetComponentImplementing<IDamagable>().OnHealthEmpty -= PlayerDead;
+            input.Moved += OnPlayerMoved;
+            input.OnFired += OnPlayerFired;
         }
 
         private void OnPlayerMoved(Vector2 direction)
         {
-            _entity.GetComponentImplementing<IMovable>().SetDirection(direction);
+            _entity.Get<IMovable>().SetDirection(direction);
         }
         
         private void OnPlayerFired()
-        {
-            _entity.GetComponentImplementing<IAttacker>().Attack();
-        }
-        
-        private void PlayerDead(Entity player)
-        {   
-            player.gameObject.SetActive(false);
-            Time.timeScale = 0;
+        { 
+            _entity.Get<WeaponBehaviour>().Attack();
         }
     }
 }

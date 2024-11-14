@@ -21,7 +21,7 @@ namespace ShootEmUp
         
         public void SetPosition(Vector3 position)
         {
-            gameObject.transform.position = position;
+            transform.position = position;
         }
 
         public void SetVelocity(Vector2 velocity)
@@ -31,20 +31,30 @@ namespace ShootEmUp
         
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (collision.gameObject.TryGetComponent<Entity>(out var player))
+            if (collision.gameObject.TryGetComponent<Entity>(out var entity))
             {
-                var damageable = player.GetComponentImplementing<IDamagable>();
-                if (damageable != null)
-                {
-                    damageable.TakeDamage(_damage);
-                    BulletOff?.Invoke(this);
-                }
+                DealDamage(entity);
+            }
+        }
+
+        private void DealDamage(Entity entity)
+        {
+            var damageable = entity.Get<IDamagable>();
+            if (damageable != null)
+            {
+                damageable.TakeDamage(_damage);
+                BulletOff?.Invoke(this);
             }
         }
 
         private void OnBecameInvisible()
         {
             BulletOff?.Invoke(this);
+        }
+
+        public void SetActive(bool isActive)
+        {
+            gameObject.SetActive(isActive);
         }
     }
 }

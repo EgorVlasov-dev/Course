@@ -25,13 +25,10 @@ namespace ShootEmUp
         [SerializeField]
         private Entity _prefab;
         
-        [SerializeField]
-        private BulletManager _bulletSystem;
-        
         private PoolObject<Entity> _enemyPool;
         
-        private Queue<Entity> _waitingToShoot = new Queue<Entity>();
-        private HashSet<Entity> _activeShootingEnemies = new HashSet<Entity>();
+        private Queue<Entity> _waitingToShoot = new();
+        private HashSet<Entity> _activeShootingEnemies = new();
         
         private void Awake()
         {   
@@ -55,13 +52,11 @@ namespace ShootEmUp
         private void SpawnEnemy()
         {
             Entity enemy = _enemyPool.GetObject();
-            enemy.gameObject.SetActive(true);
             SetupEnemy(enemy);
 
             if (_enemyPool.GetActiveObjects().Count < 5)
             {   
                 StartShooting(enemy);
-                enemy.GetComponentImplementing<EnemyAttack>().OnFire += OnFire;
             }
             else
             {
@@ -71,13 +66,13 @@ namespace ShootEmUp
 
         private void SetupEnemy(Entity enemy)
         {
-            enemy.GetComponentImplementing<IDamagable>().OnHealthEmpty += EnemyDead;
+            enemy.Get<IDamagable>().OnHealthEmpty += EnemyDead;
             Transform spawnPosition = RandomPoint(_spawnPositions);
-            enemy.transform.position = spawnPosition.position;
+            enemy.Transform.position = spawnPosition.position;
 
             Transform attackPosition = RandomPoint(_attackPositions);
-            enemy.GetComponentImplementing<IMovable>().SetDirection(attackPosition.position);
-            enemy.GetComponentImplementing<EnemyAttack>().SetTargetTransform(_character.transform);
+            enemy.Get<IMovable>().SetDirection(attackPosition.position);
+            enemy.Get<EnemyWeaponBehaviour>().SetTargetTransform(_character.Transform);
         }
         
         private Transform RandomPoint(Transform[] points)
@@ -89,21 +84,13 @@ namespace ShootEmUp
         private void StartShooting(Entity enemy)
         {
             _activeShootingEnemies.Add(enemy);
-            enemy.GetComponentImplementing<EnemyAttack>().OnFire += OnFire;
         }
         
-        private void OnFire(Vector2 position, Vector2 direction)
-        {
-            Bullet bullet = _bulletSystem.SpawnBullet(position);
-            bullet.SetVelocity(direction);
-        }
-
         private void EnemyDead(Entity enemy)
         {
            _enemyPool.ReturnObject(enemy);
             
-            enemy.GetComponentImplementing<IDamagable>().OnHealthEmpty -= EnemyDead;
-            enemy.GetComponentImplementing<EnemyAttack>().OnFire -= OnFire;
+            enemy.Get<IDamagable>().OnHealthEmpty -= EnemyDead;
             
             _activeShootingEnemies.Remove(enemy);
             

@@ -5,10 +5,12 @@ namespace ShootEmUp
 {
     public sealed class Entity : MonoBehaviour
     {
+        public Transform Transform => transform;
+        
         [SerializeField] 
         private List<MonoBehaviour> _components;
    
-        public T GetComponentImplementing<T>() where T : class
+        public T Get<T>() where T : class
         {
             foreach (var component in _components)
             {
@@ -18,6 +20,11 @@ namespace ShootEmUp
                 }
             }
             return null;
+        }
+    
+        public void SetActive(bool IsActive)
+        {
+            gameObject.SetActive(IsActive);
         }
         
     }

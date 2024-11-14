@@ -1,21 +1,22 @@
-using System;
 using UnityEngine;
 
 namespace ShootEmUp
 {
-    public class EnemyAttack : MonoBehaviour, IAttacker
+    public class EnemyWeaponBehaviour : WeaponBehaviour
     {
-        public event Action<Vector2, Vector2> OnFire;
-
+        [SerializeField] 
+        private Weapon _weapon;
+        
         [SerializeField] 
         private Transform _firePoint;
         
         [Space] 
-        [SerializeField] private float _countdown;
-
+        [SerializeField] 
+        private float _countdown;
+        
         private Transform _target;
         private float _currentTime;
-
+        
         private void Update()
         {
             if (CheckCanAttack())
@@ -42,14 +43,19 @@ namespace ShootEmUp
             return false;
         }
 
-        public void Attack()
+        protected override Vector3 GetDirectionShot()
         {
-            Vector2 startPosition = _firePoint.position;
+            Vector3 startPosition = _firePoint.position;
 
-            Vector2 vector = (Vector2)_target.position - startPosition;
-            Vector2 direction = vector.normalized;
+            Vector3 vector = _target.position - startPosition;
+            Vector3 direction = vector.normalized;
+            
+            return direction;
+        }
 
-            OnFire?.Invoke(startPosition, direction);
+        public override void Attack()
+        {
+            _weapon.Attack(GetDirectionShot());
         }
     }
 }

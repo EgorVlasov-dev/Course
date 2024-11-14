@@ -2,18 +2,17 @@ using UnityEngine;
 
 namespace ShootEmUp
 {
-    public class PlayerAttack : MonoBehaviour, IAttacker
+    public class Weapon : MonoBehaviour
     {
         [SerializeField]
-        public Transform _firePoint;
-        
+        private Transform _firePoint;
         [SerializeField] 
         private BulletManager _bulletManager;
         
-        public void Attack()
-        {
+        public void Attack(Vector3 direction)
+        {   
             Bullet bullet = _bulletManager.SpawnBullet(_firePoint.position);
-            bullet.SetVelocity(_firePoint.rotation * Vector3.up);
+            bullet.SetVelocity(direction);
         }
     }
 }

@@ -54,7 +54,7 @@ namespace ShootEmUp
             _activeObjects.Remove(obj);
         }
 
-        public List<T> GetActiveObjects()
+        public IReadOnlyList<T> GetActiveObjects()
         {
             return _activeObjects;
         }
