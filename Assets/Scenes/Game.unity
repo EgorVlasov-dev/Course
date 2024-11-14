@@ -348,8 +348,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 562298204}
-  - component: {fileID: 562298205}
   - component: {fileID: 562298206}
+  - component: {fileID: 562298205}
   m_Layer: 0
   m_Name: Enemies
   m_TagString: Untagged
@@ -417,11 +417,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 562298203}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37bd15923a144ffbab0333dc6e74e641, type: 3}
+  m_Script: {fileID: 11500000, guid: 2c475c424be919444a181b92361cd06a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _prefab: {fileID: 201757604187811891, guid: 6c1401206a5b8b744a7efe18d56006c1, type: 3}
-  _initialSizePool: 10
+  _minTimeBetweenSpawns: 1
+  _maxTimeBetweenSpawns: 2
+  _enemyManager: {fileID: 562298205}
 --- !u!1 &883274639
 GameObject:
   m_ObjectHideFlags: 0

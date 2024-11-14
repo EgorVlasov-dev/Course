@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -34,22 +33,8 @@ namespace ShootEmUp
         {   
             _enemyPool = new PoolObject<Entity>(_prefab, _container, _enemyPoolInitSize);
         }
-
-        private void Start()
-        {
-            StartCoroutine(SpawnEnemiesCoroutine());
-        }
-
-        private IEnumerator SpawnEnemiesCoroutine()
-        {
-            while (true)
-            {
-                yield return new WaitForSeconds(Random.Range(1, 2));
-                SpawnEnemy();
-            }
-        }
-
-        private void SpawnEnemy()
+        
+        public void SpawnEnemy()
         {
             Entity enemy = _enemyPool.GetObject();
             SetupEnemy(enemy);
