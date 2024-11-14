@@ -25,7 +25,7 @@ namespace ShootEmUp
 
         private void OnPlayerMoved(Vector2 direction)
         {
-            _entity.Get<IMovable>().SetDirection(direction);
+            _entity.Get<PlayerMovementBehaviour>().SetDirection(direction);
         }
         
         private void OnPlayerFired()

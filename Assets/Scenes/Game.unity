@@ -421,7 +421,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _prefab: {fileID: 201757604187811891, guid: 6c1401206a5b8b744a7efe18d56006c1, type: 3}
-  _levelBounds: {fileID: 2572952653776768186}
   _initialSizePool: 10
 --- !u!1 &883274639
 GameObject:
@@ -1287,6 +1286,16 @@ PrefabInstance:
       propertyPath: _initialSizePool
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 3398759433326058436, guid: 9699e7e809fd44b2bbf3d30c951ecbd2,
+        type: 3}
+      propertyPath: _speed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3398759433326058436, guid: 9699e7e809fd44b2bbf3d30c951ecbd2,
+        type: 3}
+      propertyPath: _levelBounds
+      value: 
+      objectReference: {fileID: 2572952653776768186}
     - target: {fileID: 3585857009530354906, guid: 9699e7e809fd44b2bbf3d30c951ecbd2,
         type: 3}
       propertyPath: _bulletManager

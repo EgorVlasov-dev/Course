@@ -71,7 +71,7 @@ namespace ShootEmUp
             enemy.Transform.position = spawnPosition.position;
 
             Transform attackPosition = RandomPoint(_attackPositions);
-            enemy.Get<IMovable>().SetDirection(attackPosition.position);
+            enemy.Get<MovementBehaviour>().SetDirection(attackPosition.position);
             enemy.Get<EnemyWeaponBehaviour>().SetTargetTransform(_character.Transform);
         }
         

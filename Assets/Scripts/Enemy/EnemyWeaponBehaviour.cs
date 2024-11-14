@@ -4,12 +4,6 @@ namespace ShootEmUp
 {
     public class EnemyWeaponBehaviour : WeaponBehaviour
     {
-        [SerializeField] 
-        private Weapon _weapon;
-        
-        [SerializeField] 
-        private Transform _firePoint;
-        
         [Space] 
         [SerializeField] 
         private float _countdown;
@@ -51,11 +45,6 @@ namespace ShootEmUp
             Vector3 direction = vector.normalized;
             
             return direction;
-        }
-
-        public override void Attack()
-        {
-            _weapon.Attack(GetDirectionShot());
         }
     }
 }

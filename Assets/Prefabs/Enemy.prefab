@@ -324,7 +324,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _weapon: {fileID: 2596654634386395543}
   _firePoint: {fileID: 3195880656587174614}
-  _countdown: 0.1
+  _countdown: 3
 --- !u!114 &2596654634386395543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,6 +383,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6655777926621526895}
   - component: {fileID: 5478067639282984273}
+  - component: {fileID: 3427656346695454281}
   m_Layer: 11
   m_Name: Movement
   m_TagString: Untagged
@@ -418,6 +419,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 5
+  _movement: {fileID: 3427656346695454281}
+--- !u!114 &3427656346695454281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5053351020295382065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c45754e120f52640b95ce79b6b3ab60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   _rigidbody: {fileID: 659620479434099170}
 --- !u!1 &6059328217366387925
 GameObject:
