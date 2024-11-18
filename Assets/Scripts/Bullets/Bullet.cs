@@ -4,8 +4,10 @@ using UnityEngine;
 namespace ShootEmUp
 {
     public sealed class Bullet : MonoBehaviour
-    {
+    {   
         public event Action<Bullet> BulletOff;
+
+        public Vector3 Position => transform.position;
         
         [SerializeField]
         private int _damage;
@@ -19,6 +21,11 @@ namespace ShootEmUp
         [SerializeField] 
         private float MagnitudeVelocity = 3;
         
+        public void SetActive(bool isActive)
+        {
+            gameObject.SetActive(isActive);
+        }
+        
         public void SetPosition(Vector3 position)
         {
             transform.position = position;
@@ -27,6 +34,12 @@ namespace ShootEmUp
         public void SetVelocity(Vector2 velocity)
         {
             _rigidbody2D.velocity = velocity.normalized * MagnitudeVelocity;
+        }
+
+        public void Disable()
+        {   
+            gameObject.SetActive(false);
+            BulletOff?.Invoke(this);
         }
         
         private void OnCollisionEnter2D(Collision2D collision)
@@ -50,11 +63,6 @@ namespace ShootEmUp
         private void OnBecameInvisible()
         {
             BulletOff?.Invoke(this);
-        }
-
-        public void SetActive(bool isActive)
-        {
-            gameObject.SetActive(isActive);
         }
     }
 }

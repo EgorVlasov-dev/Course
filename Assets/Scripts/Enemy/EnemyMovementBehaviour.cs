@@ -2,8 +2,11 @@ using UnityEngine;
 
 namespace ShootEmUp
 {
-    public class EnemyMovementBehaviour : MovementBehaviour
-    {
+    public class EnemyMovementBehaviour : MonoBehaviour
+    {   
+        [SerializeField]
+        protected Movement _movement;
+        
         private Vector2 _destination;
         private bool _isPointReached;
 
@@ -15,9 +18,9 @@ namespace ShootEmUp
             }
         }
 
-        public override void SetDirection(Vector2 direction)
+        public void SetDestination(Vector2 destination )
         {
-            _destination = direction;
+            _destination = destination ;
             _isPointReached = false;
         }
 
@@ -34,11 +37,11 @@ namespace ShootEmUp
             return true;
         }
 
-        protected override void Move()
+        private void Move()
         {
             Vector2 vector = _destination - (Vector2)transform.position;
             
-            Vector2 moveStep = GetMoveStep(vector);
+            Vector2 moveStep = _movement.GetMoveStep(vector);
             Vector2 nextPosition = _movement.Position + moveStep;
             _movement.MoveToPosition(nextPosition);
         }

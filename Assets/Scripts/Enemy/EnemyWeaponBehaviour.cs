@@ -2,8 +2,14 @@ using UnityEngine;
 
 namespace ShootEmUp
 {
-    public class EnemyWeaponBehaviour : WeaponBehaviour
+    public class EnemyWeaponBehaviour : MonoBehaviour
     {
+        [SerializeField] 
+        private Weapon _weapon;
+        
+        [SerializeField] 
+        private Transform _firePoint;
+        
         [Space] 
         [SerializeField] 
         private float _countdown;
@@ -17,6 +23,11 @@ namespace ShootEmUp
             {
                 Attack();
             }
+        }
+        
+        public void SetBulletManager(BulletManager bulletManager)
+        {
+            _weapon.SetBulletManager(bulletManager);
         }
 
         public void SetTargetTransform(Transform target)
@@ -37,7 +48,12 @@ namespace ShootEmUp
             return false;
         }
 
-        protected override Vector3 GetDirectionShot()
+        private void Attack()
+        {
+            _weapon.Attack(GetDirectionShot());
+        }
+        
+        private Vector3 GetDirectionShot()
         {
             Vector3 startPosition = _firePoint.position;
 
@@ -47,4 +63,5 @@ namespace ShootEmUp
             return direction;
         }
     }
+    
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ShootEmUp
@@ -9,12 +10,33 @@ namespace ShootEmUp
         
         [SerializeField]
         private int _initialSizePool;
+
+        [SerializeField] 
+        private LevelBounds _levelBounds;
         
         private PoolObject<Bullet> _bulletPool;
         
         private void Start()
         {   
             _bulletPool = new PoolObject<Bullet>(_prefab, transform, _initialSizePool);
+        }
+
+        private void Update()
+        {
+            CheckingExitBulletsBeyondLevel();
+        }
+
+        private void CheckingExitBulletsBeyondLevel()
+        {
+            var activeBullet = _bulletPool.GetActiveObjects();
+
+            for (int i = 0; i < activeBullet.Count; i++)
+            {
+                if (_levelBounds.InBounds(activeBullet[i].Position) == false)
+                {
+                    activeBullet[i].Disable();
+                }
+            }
         }
         
         public Bullet SpawnBullet(Vector2 position)

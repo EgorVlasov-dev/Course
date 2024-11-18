@@ -2,13 +2,18 @@ using UnityEngine;
 
 namespace ShootEmUp
 {
-    public class PlayerMovementBehaviour : MovementBehaviour
-    {
+    public class PlayerMovementBehaviour : MonoBehaviour
+    {   
+        [SerializeField]
+        private Movement _movement;
+        
         [Space] 
         [SerializeField] 
         private LevelBounds _levelBounds;
+        
+        private Vector2 _currentDirection;
 
-        public override void SetDirection(Vector2 direction)
+        public void SetDirection(Vector2 direction)
         {
             _currentDirection = direction;
         }
@@ -18,19 +23,20 @@ namespace ShootEmUp
             Move();
         }
         
-        protected override void Move()
+        private void Move()
         {
-            Vector2 moveStep = GetMoveStep(_currentDirection);
-            Vector2 targetPosition = _movement.Position + moveStep;
+            Vector2 moveStep = _movement.GetMoveStep(_currentDirection);
+            Vector2 nextPosition = _movement.Position + moveStep;
 
-            if (_levelBounds.InBounds(targetPosition))
+            if (_levelBounds.InBounds(nextPosition))
             {
-                _movement.MoveToPosition(targetPosition);
+                _movement.MoveToPosition(nextPosition);
             }
             else
             {
                 _movement.MoveToPosition(_movement.Position);
             }
         }
+        
     }
 }

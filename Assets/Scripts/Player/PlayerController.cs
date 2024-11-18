@@ -6,21 +6,30 @@ namespace ShootEmUp
     {
         [SerializeField] 
         private Entity _entity;
-
+        
         [Space]
         [SerializeField] 
-        private PlayerInput input;
+        private PlayerInput _input;
+
+        [Space] 
+        [SerializeField] 
+        private BulletManager _bulletManager;
+
+        private void Start()
+        {
+            _entity.Get<PlayerWeaponBehaviour>().SetBulletManager(_bulletManager);
+        }
 
         private void OnEnable()
         {
-            input.Moved += OnPlayerMoved;
-            input.OnFired += OnPlayerFired;
+            _input.Moved += OnPlayerMoved;
+            _input.OnFired += OnPlayerFired;
         }
         
         private void OnDisable()
         {
-            input.Moved += OnPlayerMoved;
-            input.OnFired += OnPlayerFired;
+            _input.Moved += OnPlayerMoved;
+            _input.OnFired += OnPlayerFired;
         }
 
         private void OnPlayerMoved(Vector2 direction)
@@ -30,7 +39,7 @@ namespace ShootEmUp
         
         private void OnPlayerFired()
         { 
-            _entity.Get<WeaponBehaviour>().Attack();
+            _entity.Get<PlayerWeaponBehaviour>().Attack();
         }
     }
 }

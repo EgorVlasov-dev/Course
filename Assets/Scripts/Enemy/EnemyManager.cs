@@ -23,6 +23,9 @@ namespace ShootEmUp
         
         [SerializeField]
         private Entity _prefab;
+
+        [SerializeField] 
+        private BulletManager _bulletManager;
         
         private PoolObject<Entity> _enemyPool;
         
@@ -56,7 +59,8 @@ namespace ShootEmUp
             enemy.Transform.position = spawnPosition.position;
 
             Transform attackPosition = RandomPoint(_attackPositions);
-            enemy.Get<MovementBehaviour>().SetDirection(attackPosition.position);
+            enemy.Get<EnemyMovementBehaviour>().SetDestination(attackPosition.position);
+            enemy.Get<EnemyWeaponBehaviour>().SetBulletManager(_bulletManager);
             enemy.Get<EnemyWeaponBehaviour>().SetTargetTransform(_character.Transform);
         }
         
